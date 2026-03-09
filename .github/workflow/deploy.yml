@@ -17,31 +17,31 @@ jobs:
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ec2-user
+        username: ubuntu
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # Clone or update the repo in a new app-specific directory
+          Clone or update the repo in a new app-specific directory
           if [ ! -d "my-old-app" ]; then
-            git clone https://github.com/khalids226/my-old-app.git my-old-app
+            git clone https://github.com/khalids226/test123.git my-old-app
           fi
           cd my-old-app
           git pull origin main
 
-          # Install Node.js if not already
+          Install Node.js if not already
           if ! command -v node > /dev/null; then
             curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
             sudo yum install -y nodejs
           fi
 
-          # Install npm dependencies
+          Install npm dependencies
           npm install
 
-          # Install PM2 if not already
+          Install PM2 if not already
           if ! command -v pm2 > /dev/null; then
             sudo npm install -g pm2
           fi
 
-          # Start or restart the app with PM2
+          Start or restart the app with PM2
           pm2 describe my-old-app > /dev/null
           if [ $? -ne 0 ]; then
             pm2 start app.js --name my-old-app
@@ -49,5 +49,5 @@ jobs:
             pm2 restart my-old-app
           fi
 
-          # Save the PM2 process list (for reboot persistence)
+          Save the PM2 process list (for reboot persistence)
           pm2 save
